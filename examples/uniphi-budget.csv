@@ -1,0 +1,5 @@
+Code1,Description1,Code2,Description2,Qty,Unit,Rate,Budget
+01,Building,,,,,,2500000
+,,01,Substructure,1000,m2,300,300000
+,,02,Superstructure,1000,m2,1500,1500000
+,,03,Services,1000,m2,700,700000

@@ -1,11 +1,56 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "cost-plan",
+    "title": "Draft elemental cost plan",
+    "for_each": "select id,ref from plans",
+    "file": "ref",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      {
+        "title": "Report basis",
+        "sql": "select p.ref,p.status,p.base_date,p.source,p.scope,p.assumptions,p.exclusions,p.uncertainty_pct,p.index_series,p.price_index,p.author,p.reviewed_by,j.currency,j.area_m2 from plans p join projects j on j.id=p.project_id where p.id=$1"
+      },
+      {
+        "title": "Elements",
+        "sql": "select code,description,quantity,unit,rate,amount from cost_lines where plan_id=$1 order by code"
+      },
+      {
+        "title": "Summary",
+        "note": "Contingency is a stated percentage of base cost. Tax and currency conversion are not calculated.",
+        "sql": "select currency,base_amount,contingency_amount,total_amount,rate_per_m2 from plan_totals where id=$1"
+      }
+    ]
+  },
+  {
+    "name": "tender-reconciliation",
+    "title": "Draft tender reconciliation",
+    "for_each": "select distinct p.id,p.ref from plans p join tenders t on t.plan_id=p.id",
+    "file": "ref",
+    "sections": [
+      {
+        "title": "Scope coverage and price",
+        "sql": "select supplier,currency,priced_lines,line_count,tender_amount,base_amount,variance_amount,coverage from tender_summary where plan_id=$1 order by supplier"
+      },
+      {
+        "title": "Tender source records",
+        "sql": "select supplier,line_code,amount,source,received_date from tenders where plan_id=$1 order by supplier,line_code"
+      }
+    ]
+  },
+  {
+    "name": "review-checklist",
+    "title": "Cost prediction evidence checklist",
+    "for_each": "select id,ref from plans",
+    "file": "ref",
+    "sections": [
+      {
+        "title": "Record findings",
+        "note": "A clean checklist is not RICS certification or professional sign-off.",
+        "sql": "select rule,finding from compliance_findings where plan_id=$1"
+      },
+      {
+        "title": "Review record",
+        "sql": "select author,status,reviewed_by,reviewed_at,decision_note from plans where id=$1"
+      }
     ]
   }
 ]

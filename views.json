@@ -1,13 +1,38 @@
 [
   {
-    "name": "week",
-    "title": "This week",
-    "subtitle": "Cost Benchmarking for Claude Code: what needs attention, rendered by npm run view",
+    "name": "review-week",
+    "title": "Cost review week",
+    "subtitle": "Fictional demo until replaced with your records",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Plan register",
+        "sql": "select ref,project,currency,status,total_amount,rate_per_m2,due_date from plan_totals order by ref"
+      },
+      {
+        "title": "Work requiring attention",
+        "sql": "select ref,owner,issue,due from attention_items order by due"
+      }
+    ]
+  },
+  {
+    "name": "benchmark-library",
+    "title": "Benchmark library",
+    "sections": [
+      {
+        "title": "Approved cost plans",
+        "note": "Do not compare currencies or base dates without an explicit basis. Use the benchmark command to rebase comparable plans.",
+        "sql": "select ref,sector,region,work_type,currency,base_date,index_series,price_index,rate_per_m2 from plan_totals where status='approved' order by sector,region,ref"
+      }
+    ]
+  },
+  {
+    "name": "tender-review",
+    "title": "Tender completeness",
+    "sections": [
+      {
+        "title": "Tender reconciliation",
+        "note": "Only complete tenders receive a variance. This is cost evidence, not an award decision.",
+        "sql": "select ref,supplier,currency,priced_lines,line_count,tender_amount,base_amount,variance_amount,coverage from tender_summary order by ref,supplier"
       }
     ]
   }
