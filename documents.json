@@ -7,16 +7,17 @@
     "sections": [
       {
         "title": "Report basis",
-        "sql": "select p.ref,p.status,p.base_date,p.source,p.scope,p.assumptions,p.exclusions,p.uncertainty_pct,p.index_series,p.price_index,p.author,p.reviewed_by,j.currency,j.area_m2 from plans p join projects j on j.id=p.project_id where p.id=$1"
+        "sql": "select p.ref,p.status,p.base_date,p.source,p.scope,p.assumptions,p.exclusions,p.uncertainty_pct,p.index_series,p.price_index,p.author,p.reviewed_by,j.currency,j.area_m2 from plans p join projects j on j.id=p.project_id where p.id=$1",
+        "layout": "record"
       },
       {
         "title": "Elements",
-        "sql": "select code,description,quantity,unit,rate,amount from cost_lines where plan_id=$1 order by code"
+        "sql": "select code,description,quantity,unit,rate as unit_rate_amount,amount as budget_amount from cost_lines where plan_id=$1 order by code"
       },
       {
         "title": "Summary",
         "note": "Contingency is a stated percentage of base cost. Tax and currency conversion are not calculated.",
-        "sql": "select currency,base_amount,contingency_amount,total_amount,rate_per_m2 from plan_totals where id=$1"
+        "sql": "select currency,base_amount,contingency_amount,total_amount,rate_per_m2 as area_rate_amount from plan_totals where id=$1"
       }
     ]
   },

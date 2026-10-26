@@ -40,7 +40,7 @@ try{
  await assert.rejects(()=>call('tender-add',[fresh.id],{supplier:'No actor',code:'1',amount:'1',source:'Test',date:d}),/actor/);
  assert.equal((await call('tender-reconcile',[fresh.id])).length,1);assert.equal((await call('history',[p.code])).length,j0);
  await call('log',[p.code],{note:'Source <script>note</script>',actor});assert.equal((await call('history',[p.id])).length,j0+1);
- const report=await call('draft-cost-report',[fresh.id]);const html=fs.readFileSync(report.file,'utf8');assert(html.includes('&lt;script&gt;'));assert(!html.includes('<script>'));assert.equal(report.sent,false);
+ const report=await call('draft-cost-report',[fresh.id]);const html=fs.readFileSync(report.file,'utf8');assert(html.includes('record-grid'));assert(html.includes('&lt;script&gt;'));assert(!html.includes('<script>'));assert.equal(report.sent,false);
  assert(fs.readFileSync((await call('weekly-review')).file,'utf8').includes('Compliance records'));
  const csv=path.join(REPO_ROOT,'examples/uniphi-budget.csv'),io={...opts,project:'SCH-01'};
  assert.equal((await call('import',['uniphi',csv],{...io,'dry-run':true})).leaf_rows,3);assert.equal((await call('plans')).length,5);

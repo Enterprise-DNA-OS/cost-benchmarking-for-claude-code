@@ -7,6 +7,7 @@
 //   [{ "name": "owner-statement", "title": "Owner statement", "for_each": "select id, name from owners",
 //      "file": "name",                                  // column of for_each used in the file name
 //      "sections": [{ "title": "Rent received", "sql": "select ... where owner_id = $1" }] }]
+// A section with layout: "record" renders its first row as labelled fields.
 // Every section query gets the record's `id` as $1.
 //
 //   npm run docs                       # every document, every record
@@ -15,7 +16,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { getDb, REPO_ROOT } from './lib/db.mjs';
-import { page, table, writeOut } from './lib/render.mjs';
+import { page, table, record, writeOut } from './lib/render.mjs';
 
 const [only, idPrefix] = process.argv.slice(2);
 const spec = JSON.parse(readFileSync(path.join(REPO_ROOT, 'documents.json'), 'utf8'));
@@ -32,7 +33,7 @@ try {
       const sections = [];
       for (const s of d.sections) {
         const rows = await db.query(s.sql, [r.id]);
-        sections.push({ title: s.title, note: s.note, html: table(rows, s.columns) });
+        sections.push({ title: s.title, note: s.note, html: s.layout === 'record' ? record(rows[0], s.columns) : table(rows, s.columns) });
       }
       const label = r[d.file || 'id'];
       const file = writeOut(path.join('docs-out', d.name), `${slug(label) || 'record'}-${r.id}`, page({ title: d.title, subtitle: String(label), sections }));

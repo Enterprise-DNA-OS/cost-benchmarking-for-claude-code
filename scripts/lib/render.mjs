@@ -25,6 +25,13 @@ export function table(rows, columns = null) {
   return `<div class="table-scroll"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
 
+// Single-record report sections stay legible without a wide one-row table.
+export function record(row, columns = null) {
+  if (!row) return '<p class="empty">Nothing here.</p>';
+  const keys = columns || Object.keys(row);
+  return '<dl class="record-grid">' + keys.map((key) => `<div><dt>${esc(key.replace(/_/g, ' '))}</dt><dd>${esc(fmt(row[key], key, row))}</dd></div>`).join('') + '</dl>';
+}
+
 function fmt(v, key, row) {
   if (v === null || v === undefined) return /(?:_amount|_cents|_bps)$/.test(key) ? 'unknown' : '';
   if (typeof v === 'boolean') return v ? 'Yes' : 'No';
@@ -58,7 +65,7 @@ section{background:var(--paper);border-radius:14px;padding:18px 20px;margin:0 0 
 h2{margin:0 0 8px;font-size:16px;color:var(--p);text-transform:uppercase;letter-spacing:.08em}.note{margin:0 0 10px;color:#555}
 .table-scroll{max-width:100%;overflow-x:auto}.table-scroll{overflow-x:auto;max-width:100%}table{width:100%;border-collapse:collapse;font-size:14px}th{text-align:left;font-weight:600;color:#666;border-bottom:2px solid #eee;padding:8px 10px;white-space:normal}
 td.date-cell{white-space:nowrap}td{padding:8px 10px;border-bottom:1px solid #f0f0f4;vertical-align:top;overflow-wrap:anywhere}tr:hover td{background:#faf9ff}.empty{color:#888;margin:0}
-footer{text-align:center;color:#888;font-size:12px;padding:20px}
+.record-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px 24px;margin:0}.record-grid dt{font-size:12px;text-transform:uppercase;color:#666;margin-bottom:5px}.record-grid dd{margin:0;overflow-wrap:anywhere;line-height:1.5}\nfooter{text-align:center;color:#888;font-size:12px;padding:20px}
 @media(max-width:600px){header{flex-wrap:wrap;padding:18px}header .biz{margin-left:0}main{padding:16px 10px}section{padding:14px}th,td{padding:7px}}
 @media print{.table-scroll{overflow:visible}table{font-size:10px}th,td{padding:4px;white-space:normal;overflow-wrap:anywhere}body{background:#fff}section{box-shadow:none;border:1px solid #eee;break-inside:avoid}}
 </style></head><body>
